@@ -123,7 +123,7 @@ namespace Dapper.SimpleSave
         {
             UpdateAll(
                 connection,
-                new [] {Tuple.Create(oldObject, newObject)},
+                new[] { Tuple.Create(oldObject, newObject) },
                 transaction);
         }
 
@@ -182,9 +182,10 @@ namespace Dapper.SimpleSave
             T obj,
             IDbTransaction transaction = null)
         {
-            SoftDelete(
+            UpdateInternal(
                 connection,
-                new [] { obj },
+                new[] { Tuple.Create(obj, default(T)) },
+                true,
                 transaction);
         }
 
@@ -441,14 +442,14 @@ Parameters:
                 insertedPk = CoerceNumericPkToDecimal(insertedPk);
                 metadata.SetPrimaryKey(
                     script.InsertedValue,
-                    Decimal.ToInt32((decimal) insertedPk));
+                    Decimal.ToInt32((decimal)insertedPk));
             }
-            else if (type == typeof (long?) || type == typeof (long))
+            else if (type == typeof(long?) || type == typeof(long))
             {
                 insertedPk = CoerceNumericPkToDecimal(insertedPk);
                 metadata.SetPrimaryKey(
                     script.InsertedValue,
-                    Decimal.ToInt64((decimal) insertedPk));
+                    Decimal.ToInt64((decimal)insertedPk));
             }
             else
             {
@@ -462,11 +463,11 @@ Parameters:
         {
             if (insertedPk is int)
             {
-                insertedPk = (decimal) (int) insertedPk;
+                insertedPk = (decimal)(int)insertedPk;
             }
             else if (insertedPk is long)
             {
-                insertedPk = (decimal) (long) insertedPk;
+                insertedPk = (decimal)(long)insertedPk;
             }
             else if (insertedPk != null && insertedPk is string)
             {
@@ -497,10 +498,10 @@ Parameters:
             // ToArray() dodges exception due to concurrent modification
             foreach (string key in script.Parameters.Keys.ToArray())
             {
-                var value = script.Parameters [key];
+                var value = script.Parameters[key];
                 if (value is Func<object>)
                 {
-                    script.Parameters [key] = (value as Func<object>)();
+                    script.Parameters[key] = (value as Func<object>)();
                 }
             }
         }
