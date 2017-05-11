@@ -24,45 +24,21 @@ namespace Dapper.SimpleSave
             InitReferenceType();
         }
 
-        public bool IsPrimaryKey
-        {
-            get { return HasAttribute<PrimaryKeyAttribute>();}
-        }
+        public bool IsPrimaryKey => HasAttribute<PrimaryKeyAttribute>();
 
-        public bool IsManyToManyRelationship
-        {
-            get { return HasAttribute<ManyToManyAttribute>(); }
-        }
+        public bool IsManyToManyRelationship => HasAttribute<ManyToManyAttribute>();
 
-        public bool IsOneToManyRelationship
-        {
-            get { return HasAttribute<OneToManyAttribute>(); }
-        }
+        public bool IsOneToManyRelationship => HasAttribute<OneToManyAttribute>();
 
-        public bool IsManyToOneRelationship
-        {
-            get { return HasAttribute<ManyToOneAttribute>(); }
-        }
+        public bool IsManyToOneRelationship => HasAttribute<ManyToOneAttribute>();
 
-        public bool IsOneToOneRelationship
-        {
-            get { return HasAttribute<OneToOneAttribute>(); }
-        }
+        public bool IsOneToOneRelationship => HasAttribute<OneToOneAttribute>();
 
-        public bool IsReadOnly
-        {
-            get { return HasAttribute<SimpleSaveIgnoreAttribute>() || ! Prop.CanWrite;}
-        }
+        public bool IsReadOnly => HasAttribute<SimpleSaveIgnoreAttribute>() || ! Prop.CanWrite;
 
-        public bool IsPublic
-        {
-            get { return Prop.GetGetMethod().IsPublic; }
-        }
+        public bool IsPublic => Prop.GetGetMethod().IsPublic;
 
-        public bool IsSaveable
-        {
-            get { return !IsReadOnly && IsPublic; }
-        }
+        public bool IsSaveable => !IsReadOnly && IsPublic;
 
         public bool IsGenericDictionary { get; private set; }
 
@@ -84,15 +60,9 @@ namespace Dapper.SimpleSave
 
         public bool IsString { get; private set; }
 
-        public string ColumnName
-        {
-            get
-            {
-                return HasAttribute<ColumnAttribute>()
-                    ? GetAttribute<ColumnAttribute>().Name
-                    : Prop.Name;
-            }
-        }
+        public string ColumnName => HasAttribute<ColumnAttribute>()
+            ? GetAttribute<ColumnAttribute>().Name
+            : Prop.Name;
 
         public object GetValue(object source)
         {

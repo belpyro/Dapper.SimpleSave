@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BasicConfiguration.cs" />
     <Compile Include="ColumnAttribute.cs" />
     <Compile Include="DifferenceEventArgs.cs" />
     <Compile Include="DoNotAutowireExplicitTransitiveBackReferenceAttribute.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Impl\MemberInfoExtensions.cs" />
     <Compile Include="Impl\OperationBuilder.cs" />
     <Compile Include="Impl\PrimaryKeyComparer.cs" />
+    <Compile Include="ISimpleConfiguration.cs" />
     <Compile Include="ISimpleSaveLogger.cs" />
     <Compile Include="PropertyMetadata.cs" />
     <Compile Include="Impl\DeleteOperation.cs" />
@@ -88,6 +90,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadOnlyAttribute.cs" />
     <Compile Include="ReferenceDataAttribute.cs" />
+    <Compile Include="SimpleSaveConfiguration.cs" />
     <Compile Include="SimpleSaveExtensions.cs" />
     <Compile Include="SimpleSaveIgnoreAttribute.cs" />
     <Compile Include="SoftDeleteColumnAttribute.cs" />

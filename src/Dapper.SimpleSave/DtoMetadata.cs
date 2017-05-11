@@ -23,25 +23,16 @@ namespace Dapper.SimpleSave
 
         public string TableName { get; private set; }
 
-        public bool IsReferenceData
-        {
-            get { return GetAttribute<ReferenceDataAttribute>() != null; }
-        }
+        public bool IsReferenceData => GetAttribute<ReferenceDataAttribute>() != null;
 
-        public bool HasUpdateableForeignKeys
-        {
-            get
-            {
-                return IsReferenceData
-                    && GetAttribute<ReferenceDataAttribute>().HasUpdateableForeignKeys;
-            }
-        }
+        public bool HasUpdateableForeignKeys => IsReferenceData
+                                                && GetAttribute<ReferenceDataAttribute>().HasUpdateableForeignKeys;
 
         public PropertyMetadata PrimaryKey { get; set; }
 
         public IEnumerable<PropertyMetadata> WriteableProperties { get; set; }
 
-        public IEnumerable<PropertyMetadata> AllProperties { get; set; } 
+        public IEnumerable<PropertyMetadata> AllProperties { get; set; }
 
         public PropertyMetadata this[string propertyColumnNameCaseInsensitive]
         {
@@ -91,7 +82,7 @@ namespace Dapper.SimpleSave
             PrimaryKey.SetValue(obj, value);
         }
 
-        public bool HasSoftDeleteSupport { get { return SoftDeleteProperty != null; } }
+        public bool HasSoftDeleteSupport => SoftDeleteProperty != null;
 
         public PropertyMetadata SoftDeleteProperty { get; private set; }
 
@@ -227,11 +218,12 @@ namespace Dapper.SimpleSave
             {
                 throw new InvalidOperationException(message);
             }
-            else if (Logger.IsWarnEnabled)
+
+            if (Logger.IsWarnEnabled)
             {
                 message += " If you don't, unexpected or undesirable behaviour may result. For example, "
-                        + "if the values of these two properties are different, only one will be saved to "
-                        + "the database. You should not rely on which one it will be.";
+                           + "if the values of these two properties are different, only one will be saved to "
+                           + "the database. You should not rely on which one it will be.";
                 Logger.Warn(message);
             }
         }
@@ -239,12 +231,16 @@ namespace Dapper.SimpleSave
         private void InitTableName()
         {
             var attr = GetAttribute<TableAttribute>();
-            var name = attr == null ? null : attr.SchemaQualifiedTableName;
-            //if (name == null)
-            //{
-            //    //  TODO: generate names for enums and DTOs without any name specified
-            //    //  Hmm... looks like possibly we may not need this.
-            //}
+            var name = attr?.SchemaQualifiedTableName;
+
+            if (name == null && SimpleSaveConfiguration.Configuration.AutoGenerateTableName)
+            {
+                TableName = SimpleSaveConfiguration.Configuration.PluralizeTableName
+                    ? $"{DtoType.Name}s"
+                    : DtoType.Name;
+                return;
+            }
+
             TableName = name;
         }
     }
