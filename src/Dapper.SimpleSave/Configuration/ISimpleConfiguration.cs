@@ -31,5 +31,7 @@ namespace Dapper.SimpleSave.Configuration
         long QueryDurationMillisWarningEmitThreshold { get; set; }
 
         long QueryDurationMillisErrorEmitThreshold { get; set; }
+
+        string DefaultKeyName { get; set; }
     }
 }

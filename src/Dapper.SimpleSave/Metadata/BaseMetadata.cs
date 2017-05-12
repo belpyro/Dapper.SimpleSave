@@ -7,7 +7,6 @@ namespace Dapper.SimpleSave.Metadata
 {
     public abstract class BaseMetadata
     {
-
         private readonly IDictionary<Type, Attribute> _attributes;
 
         protected BaseMetadata(MemberInfo member)

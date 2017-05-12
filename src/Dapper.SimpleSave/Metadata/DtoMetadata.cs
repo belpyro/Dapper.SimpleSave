@@ -8,7 +8,7 @@ using log4net;
 
 namespace Dapper.SimpleSave.Metadata
 {
-    public class DtoMetadata : BaseMetadata
+    public class DtoMetadata : BaseMetadata, IDtoMetadata
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(DtoMetadata));
 

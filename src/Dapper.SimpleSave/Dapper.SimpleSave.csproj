@@ -26,6 +26,10 @@
     <Reference Include="Fasterflect, Version=2.1.3.0, Culture=neutral, PublicKeyToken=38d18473284c1ca7, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\fasterflect.2.1.3\lib\net40\Fasterflect.dll</HintPath>
     </Reference>
+    <Reference Include="FastMember, Version=1.0.0.9, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\FastMember.1.1.0\lib\net40\FastMember.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
     </Reference>
@@ -42,16 +46,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ReferenceData.cs" />
+    <Compile Include="Attributes\SoftDeleteData.cs" />
+    <Compile Include="Configuration\AttributesEntityConfiguration.cs" />
+    <Compile Include="Configuration\BaseConfig.cs" />
     <Compile Include="Configuration\BasicConfiguration.cs" />
     <Compile Include="Attributes\ColumnAttribute.cs" />
-    <Compile Include="Configuration\ConfigurationExtensions.cs" />
+    <Compile Include="Configuration\IConfiguration.cs" />
+    <Compile Include="Configuration\IEntityConfiguration.cs" />
+    <Compile Include="Configuration\MemberRelation.cs" />
+    <Compile Include="Configuration\RelationType.cs" />
+    <Compile Include="Configuration\EntityConfiguration.cs" />
     <Compile Include="DifferenceEventArgs.cs" />
-    <Compile Include="DoNotAutowireExplicitTransitiveBackReferenceAttribute.cs" />
+    <Compile Include="Attributes\DoNotAutowireExplicitTransitiveBackReferenceAttribute.cs" />
     <Compile Include="Attributes\ForeignKeyReferenceAttribute.cs" />
     <Compile Include="Impl\Ancestor.cs" />
     <Compile Include="Impl\BaseCommand.cs" />
     <Compile Include="Impl\BaseInsertDeleteCommand.cs" />
     <Compile Include="Impl\BaseInsertDeleteOperation.cs" />
+    <Compile Include="Impl\EntityValidator.cs" />
     <Compile Include="Metadata\BaseMetadata.cs" />
     <Compile Include="Impl\BaseOperation.cs" />
     <Compile Include="Impl\CommandBuilder.cs" />
@@ -73,6 +86,9 @@
     <Compile Include="Impl\PrimaryKeyComparer.cs" />
     <Compile Include="Configuration\ISimpleConfiguration.cs" />
     <Compile Include="ISimpleSaveLogger.cs" />
+    <Compile Include="Metadata\IDtoMetadata.cs" />
+    <Compile Include="Metadata\IPropertyMetadata.cs" />
+    <Compile Include="Metadata\IPropertyMetadataExt.cs" />
     <Compile Include="Metadata\PropertyMetadata.cs" />
     <Compile Include="Impl\DeleteOperation.cs" />
     <Compile Include="Impl\Script.cs" />
@@ -87,10 +103,12 @@
     <Compile Include="Attributes\OneToManyAttribute.cs" />
     <Compile Include="Attributes\OneToOneAttribute.cs" />
     <Compile Include="Attributes\PrimaryKeyAttribute.cs" />
+    <Compile Include="Metadata\PropertyMetadataExt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Attributes\ReadOnlyAttribute.cs" />
     <Compile Include="Attributes\ReferenceDataAttribute.cs" />
     <Compile Include="Configuration\SimpleSaveConfiguration.cs" />
+    <Compile Include="Settings\SimpleSaveSettings.cs" />
     <Compile Include="SimpleSaveExtensions.cs" />
     <Compile Include="Attributes\SimpleSaveIgnoreAttribute.cs" />
     <Compile Include="Attributes\SoftDeleteColumnAttribute.cs" />

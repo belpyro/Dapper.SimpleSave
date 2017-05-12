@@ -2,6 +2,7 @@
 
 namespace Dapper.SimpleSave.Attributes
 {
+    [AttributeUsage(AttributeTargets.Property)]
     public class ManyToOneAttribute : Attribute
     {
         public ManyToOneAttribute()

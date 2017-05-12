@@ -40,7 +40,7 @@ namespace Dapper.SimpleSave
                 if (value == null)
                 {
                     throw new ArgumentNullException(
-                        "value",
+                        nameof(value),
                         "Specifying a null ISimpleSaveLogger is not permitted.");
                 }
                 _logger = value;
@@ -60,11 +60,7 @@ namespace Dapper.SimpleSave
 
         internal static void OnDifferenceProcessed(DifferenceEventArgs args)
         {
-            var handlers = DifferenceProcessed;
-            if (handlers != null)
-            {
-                handlers(typeof(SimpleSaveExtensions), args);
-            }
+            DifferenceProcessed?.Invoke(typeof(SimpleSaveExtensions), args);
         }
 
         public static void UpdateAll<T>(

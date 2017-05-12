@@ -10,11 +10,9 @@ namespace Dapper.SimpleSave.Impl
             if (metadata.TableName == null)
             {
                 throw new ArgumentException(
-                    string.Format(
-                        "Type {0} is not marked with a [Table] attribute. You must mark it with "
-                        + "[Table(\"[schema].[tableName]\")] to use it with Dapper.SimpleSave.",
-                        metadata.DtoType.FullName),
-                    "type");
+                    $"Type {metadata.DtoType.FullName} is not marked with a [Table] attribute. You must mark it with " +
+                    "[Table(\"[schema].[tableName]\")] to use it with Dapper.SimpleSave.",
+                    $"type");
             }
 
             if (metadata.DtoType.IsEnum)

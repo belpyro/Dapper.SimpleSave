@@ -2,6 +2,7 @@
 
 namespace Dapper.SimpleSave.Attributes
 {
+    [AttributeUsage(AttributeTargets.Property)]
     public class SoftDeleteColumnAttribute : Attribute
     {
         public SoftDeleteColumnAttribute() : this(false)

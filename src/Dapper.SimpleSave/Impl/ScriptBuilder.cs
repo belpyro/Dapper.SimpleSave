@@ -264,7 +264,7 @@ WHERE [{0}] = ", command.PrimaryKeyColumn));
 
                     script.Buffer.Append(string.Format(
                         @"DELETE FROM {0}
-WHERE [{1}] = ", 
+WHERE [{1}] = ",
                         operation.OwnerPropertyMetadata.GetAttribute<ManyToManyAttribute>().SchemaQualifiedLinkTableName,
                         operation.OwnerPrimaryKeyColumn));
 
@@ -334,10 +334,10 @@ SELECT SCOPE_IDENTITY();
                     || ((operation.OwnerPropertyMetadata.HasAttribute<OneToManyAttribute>()
                         || operation.OwnerPropertyMetadata.HasAttribute<OneToOneAttribute>())//IsOneToOneRelationshipWithFkOnParent(operation)) //  Because 1:1 with FK on child is like 1:N, and we already handle 1:1 with FK on parent anyway
                         && !operation.ValueMetadata.HasAttribute<ReferenceDataAttribute>()
-                        && !operation.OwnerPropertyMetadata.HasAttribute<ReferenceDataAttribute>())) 
+                        && !operation.OwnerPropertyMetadata.HasAttribute<ReferenceDataAttribute>()))
                 {
                     //  INSERT the value into the table defined by ValueMetadata
-                    
+
                     var colBuff = new StringBuilder();
                     var valBuff = new StringBuilder();
                     var values = new ArrayList();

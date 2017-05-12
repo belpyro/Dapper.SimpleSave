@@ -6,7 +6,7 @@ using Fasterflect;
 
 namespace Dapper.SimpleSave.Metadata
 {
-    public class PropertyMetadata : BaseMetadata
+    public class PropertyMetadata : BaseMetadata, IPropertyMetadata
     {
         public PropertyInfo Prop { get; set; }
 
