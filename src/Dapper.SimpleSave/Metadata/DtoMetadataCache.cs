@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Dapper.SimpleSave.Impl;
 
-namespace Dapper.SimpleSave
+namespace Dapper.SimpleSave.Metadata
 {
     public class DtoMetadataCache
     {

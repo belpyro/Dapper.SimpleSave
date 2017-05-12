@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Castle.Core.Internal;
+using Dapper.SimpleSave.Attributes;
+using Dapper.SimpleSave.Metadata;
+using Fasterflect;
 
 namespace Dapper.SimpleSave.Impl
 {
@@ -81,7 +84,7 @@ namespace Dapper.SimpleSave.Impl
                     var propertyMetaData = SoftDeleteValidator.GetValidatedSoftDeleteProperty(metadata);
 
                     var trueIndicatesDeleted =
-                        propertyMetaData.GetAttribute<SoftDeleteColumnAttribute>().TrueIndicatesDeleted;
+                        propertyMetaData.Prop.Attribute<SoftDeleteColumnAttribute>().TrueIndicatesDeleted;//GetAttribute<SoftDeleteColumnAttribute>().TrueIndicatesDeleted;
 
                     target.Add(new Difference()
                     {
@@ -140,7 +143,7 @@ namespace Dapper.SimpleSave.Impl
                 }
                 else
                 {
-                    DiffProperties(metadata, oldObject, newObject, target, ancestors, property);                    
+                    DiffProperties(metadata, oldObject, newObject, target, ancestors, property);
                 }
             }
         }
@@ -330,7 +333,7 @@ namespace Dapper.SimpleSave.Impl
             AddDifferencesForItemsInOnlyOneCollection(
                 oldOwner, newOwner, metadata, prop, oldItems,
                 newItems, itemTypeMeta, DifferenceType.Deletion, differences, ancestors);
-            
+
             AddDifferencesForItemsInOnlyOneCollection(
                 oldOwner, newOwner, metadata, prop, newItems,
                 oldItems, itemTypeMeta, DifferenceType.Insertion, differences, ancestors);
@@ -452,7 +455,7 @@ namespace Dapper.SimpleSave.Impl
             }
 
             public IDictionary<object, object> ItemsById { get; private set; }
-            public IList<object> ItemsWithNoPkValue { get; private set; } 
+            public IList<object> ItemsWithNoPkValue { get; private set; }
         }
 
         private ItemLookup FindRemovedItems(
@@ -518,7 +521,7 @@ namespace Dapper.SimpleSave.Impl
                     return;
                 }
             }
-           
+
             var oldPropValue = GetPropertyValueFrom(oldObject, getter);
             var newPropValue = GetPropertyValueFrom(newObject, getter);
 
@@ -659,7 +662,7 @@ namespace Dapper.SimpleSave.Impl
             {
                 return true;
             }
-            
+
             if (value1 == null || value2 == null)
             {
                 return false;

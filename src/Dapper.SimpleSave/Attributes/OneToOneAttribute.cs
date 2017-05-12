@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Dapper.SimpleSave
+namespace Dapper.SimpleSave.Attributes
 {
     public class OneToOneAttribute : Attribute
     {

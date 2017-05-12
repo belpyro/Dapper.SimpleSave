@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Dapper.SimpleSave.Metadata;
 
 namespace Dapper.SimpleSave.Impl {
     public abstract class BaseOperation

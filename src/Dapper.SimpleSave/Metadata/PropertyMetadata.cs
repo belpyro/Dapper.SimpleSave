@@ -1,8 +1,10 @@
 using System;
 using System.Reflection;
+using Dapper.SimpleSave.Attributes;
 using Dapper.SimpleSave.Impl;
+using Fasterflect;
 
-namespace Dapper.SimpleSave
+namespace Dapper.SimpleSave.Metadata
 {
     public class PropertyMetadata : BaseMetadata
     {
@@ -12,6 +14,7 @@ namespace Dapper.SimpleSave
         {
             Prop = prop;
 
+            InitProps();
             InitDictionary();
             InitEnumerable();
             InitValueType();
@@ -24,19 +27,32 @@ namespace Dapper.SimpleSave
             InitReferenceType();
         }
 
-        public bool IsPrimaryKey => HasAttribute<PrimaryKeyAttribute>();
+        private void InitProps()
+        {
+            IsPrimaryKey = Prop.HasAttribute<PrimaryKeyAttribute>();
+            IsManyToManyRelationship = Prop.HasAttribute<ManyToManyAttribute>();
+            IsOneToManyRelationship = Prop.HasAttribute<OneToManyAttribute>();
+            IsManyToOneRelationship = Prop.HasAttribute<ManyToOneAttribute>();
+            IsOneToOneRelationship = Prop.HasAttribute<OneToOneAttribute>();
+            IsSoftDeletable = Prop.HasAttribute<SoftDeleteColumnAttribute>();
+            IsReadOnly = Prop.HasAttribute<SimpleSaveIgnoreAttribute>() || !Prop.CanWrite;
+            IsPublic = Prop.IsReadable();
+            ColumnName = Prop.HasAttribute<ColumnAttribute>() ? Prop.Attribute<ColumnAttribute>().Name : Prop.Name;
+        }
 
-        public bool IsManyToManyRelationship => HasAttribute<ManyToManyAttribute>();
+        public bool IsPrimaryKey { get; private set; }
 
-        public bool IsOneToManyRelationship => HasAttribute<OneToManyAttribute>();
+        public bool IsManyToManyRelationship { get; private set; }
 
-        public bool IsManyToOneRelationship => HasAttribute<ManyToOneAttribute>();
+        public bool IsOneToManyRelationship { get; private set; }
 
-        public bool IsOneToOneRelationship => HasAttribute<OneToOneAttribute>();
+        public bool IsManyToOneRelationship { get; private set; }
 
-        public bool IsReadOnly => HasAttribute<SimpleSaveIgnoreAttribute>() || ! Prop.CanWrite;
+        public bool IsOneToOneRelationship { get; private set; }
 
-        public bool IsPublic => Prop.GetGetMethod().IsPublic;
+        public bool IsReadOnly { get; private set; }
+
+        public bool IsPublic { get; private set; }
 
         public bool IsSaveable => !IsReadOnly && IsPublic;
 
@@ -60,18 +76,18 @@ namespace Dapper.SimpleSave
 
         public bool IsString { get; private set; }
 
-        public string ColumnName => HasAttribute<ColumnAttribute>()
-            ? GetAttribute<ColumnAttribute>().Name
-            : Prop.Name;
+        public string ColumnName { get; private set; }
+
+        public bool IsSoftDeletable { get; private set; }
 
         public object GetValue(object source)
         {
-            return Prop.GetGetMethod().Invoke(source, new object[0]);
+            return source.TryGetPropertyValue(Prop.Name);
         }
 
         public void SetValue(object source, object value)
         {
-            Prop.GetSetMethod().Invoke(source, new[] {value});
+            source.TrySetPropertyValue(Prop.Name, value);
         }
 
         public void InitDictionary()
@@ -96,17 +112,17 @@ namespace Dapper.SimpleSave
 
         private void InitBool()
         {
-            IsBool = typeof (bool) == Prop.PropertyType;
+            IsBool = typeof(bool) == Prop.PropertyType;
         }
 
         private void InitDateTime()
         {
-            IsDateTime = typeof (DateTime) == Prop.PropertyType;
+            IsDateTime = typeof(DateTime) == Prop.PropertyType;
         }
 
         private void InitDateTimeOffset()
         {
-            IsDateTimeOffset = typeof (DateTimeOffset) == Prop.PropertyType;
+            IsDateTimeOffset = typeof(DateTimeOffset) == Prop.PropertyType;
         }
         private void InitNumericType()
         {
@@ -122,7 +138,7 @@ namespace Dapper.SimpleSave
 
         private void InitString()
         {
-            IsString = typeof (string) == Prop.PropertyType;
+            IsString = typeof(string) == Prop.PropertyType;
         }
     }
 }

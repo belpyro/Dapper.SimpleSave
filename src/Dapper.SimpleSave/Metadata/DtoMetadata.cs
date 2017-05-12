@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Dapper.SimpleSave.Impl;
+using Dapper.SimpleSave.Attributes;
+using Dapper.SimpleSave.Configuration;
+using Fasterflect;
 using log4net;
 
-namespace Dapper.SimpleSave
+namespace Dapper.SimpleSave.Metadata
 {
     public class DtoMetadata : BaseMetadata
     {
         private static readonly ILog Logger = LogManager.GetLogger(typeof(DtoMetadata));
 
-        private IDictionary<string, PropertyMetadata> _propertiesByCaseInsensitiveColumnName = new Dictionary<string, PropertyMetadata>(StringComparer.CurrentCultureIgnoreCase);
+        private readonly IDictionary<string, PropertyMetadata> _propertiesByCaseInsensitiveColumnName = new Dictionary<string, PropertyMetadata>(StringComparer.CurrentCultureIgnoreCase);
 
         public DtoMetadata(Type type) : base(type)
         {
@@ -19,20 +21,19 @@ namespace Dapper.SimpleSave
             InitTableName();
         }
 
-        public Type DtoType { get; set; }
+        public Type DtoType { get; }
 
         public string TableName { get; private set; }
 
-        public bool IsReferenceData => GetAttribute<ReferenceDataAttribute>() != null;
+        public bool IsReferenceData { get; private set; }
 
-        public bool HasUpdateableForeignKeys => IsReferenceData
-                                                && GetAttribute<ReferenceDataAttribute>().HasUpdateableForeignKeys;
+        public bool HasUpdateableForeignKeys { get; private set; }
 
-        public PropertyMetadata PrimaryKey { get; set; }
+        public PropertyMetadata PrimaryKey { get; private set; }
 
-        public IEnumerable<PropertyMetadata> WriteableProperties { get; set; }
+        public IEnumerable<PropertyMetadata> WriteableProperties { get; private set; }
 
-        public IEnumerable<PropertyMetadata> AllProperties { get; set; }
+        public IEnumerable<PropertyMetadata> AllProperties { get; private set; }
 
         public PropertyMetadata this[string propertyColumnNameCaseInsensitive]
         {
@@ -44,11 +45,55 @@ namespace Dapper.SimpleSave
             }
         }
 
+        private void InitProperties()
+        {
+            IList<PropertyMetadata> writeable = new List<PropertyMetadata>();
+            var all = new List<PropertyMetadata>();
+
+            IsReferenceData = DtoType.HasAttribute<ReferenceDataAttribute>();
+            HasUpdateableForeignKeys = IsReferenceData &&
+                                       DtoType.Attribute<ReferenceDataAttribute>().HasUpdateableForeignKeys;
+
+            foreach (var prop in DtoType.PropertiesWith(Flags.InstancePublic))
+            {
+                var propMeta = new PropertyMetadata(prop);
+                all.Add(propMeta);
+
+                _propertiesByCaseInsensitiveColumnName[propMeta.ColumnName] = propMeta;
+
+                if (!propMeta.IsSaveable)
+                {
+                    continue;
+                }
+
+                if (propMeta.IsPrimaryKey)
+                {
+                    PrimaryKey = propMeta;
+                }
+
+                if (propMeta.IsSoftDeletable)
+                {
+                    SoftDeleteProperty = propMeta;
+                }
+
+                writeable.Add(propMeta);
+            }
+
+            if (!string.IsNullOrEmpty(TableName))
+            {
+                //  If this type represents a table then we want to deduplicate properties
+                //  mapped to columns, otherwise we don't really care.
+                writeable = DeduplicateWriteablePropertiesMappedToColumns(writeable);
+            }
+            WriteableProperties = writeable;
+            AllProperties = all;
+        }
+
         public PropertyMetadata GetForeignKeyColumnFor(Type dtoType)
         {
             foreach (var property in WriteableProperties)
             {
-                var fk = property.GetAttribute<ForeignKeyReferenceAttribute>();
+                var fk = property.Prop.Attribute<ForeignKeyReferenceAttribute>();
                 if (null != fk && fk.ReferencedDto == dtoType)
                 {
                     return property;
@@ -85,45 +130,6 @@ namespace Dapper.SimpleSave
         public bool HasSoftDeleteSupport => SoftDeleteProperty != null;
 
         public PropertyMetadata SoftDeleteProperty { get; private set; }
-
-        private void InitProperties()
-        {
-            IList<PropertyMetadata> writeable = new List<PropertyMetadata>();
-            var all = new List<PropertyMetadata>();
-            foreach (var prop in DtoType.GetProperties(
-                BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.Instance))
-            {
-                var propMeta = new PropertyMetadata(prop);
-                all.Add(propMeta);
-                _propertiesByCaseInsensitiveColumnName[propMeta.ColumnName] = propMeta;
-
-                if (!propMeta.IsSaveable)
-                {
-                    continue;
-                }
-
-                if (propMeta.IsPrimaryKey)
-                {
-                    PrimaryKey = propMeta;
-                }
-
-                if (propMeta.HasAttribute<SoftDeleteColumnAttribute>())
-                {
-                    SoftDeleteProperty = propMeta;
-                }
-
-                writeable.Add(propMeta);
-            }
-
-            if (HasAttribute<TableAttribute>())
-            {
-                //  If this type represents a table then we want to deduplicate properties
-                //  mapped to columns, otherwise we don't really care.
-                writeable = DeduplicateWriteablePropertiesMappedToColumns(writeable);
-            }
-            WriteableProperties = writeable;
-            AllProperties = all;
-        }
 
         private IList<PropertyMetadata> DeduplicateWriteablePropertiesMappedToColumns(IList<PropertyMetadata> source)
         {
@@ -230,7 +236,7 @@ namespace Dapper.SimpleSave
 
         private void InitTableName()
         {
-            var attr = GetAttribute<TableAttribute>();
+            var attr = DtoType.Attribute<TableAttribute>();
             var name = attr?.SchemaQualifiedTableName;
 
             if (name == null && SimpleSaveConfiguration.Configuration.AutoGenerateTableName)

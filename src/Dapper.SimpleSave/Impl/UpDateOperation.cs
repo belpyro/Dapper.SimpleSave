@@ -1,4 +1,6 @@
-﻿namespace Dapper.SimpleSave.Impl
+﻿using Dapper.SimpleSave.Metadata;
+
+namespace Dapper.SimpleSave.Impl
 {
     /// <summary>
     /// Represents an update operation to carry out on a single column in a table. Multiple

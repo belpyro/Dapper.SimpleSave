@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dapper.SimpleSave.Attributes;
 
 namespace Dapper.SimpleSave.Impl
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using Dapper.SimpleSave.Metadata;
 
 namespace Dapper.SimpleSave.Impl
 {

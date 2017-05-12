@@ -1,4 +1,4 @@
-﻿namespace Dapper.SimpleSave
+﻿namespace Dapper.SimpleSave.Configuration
 {
     // todo make configuration read-only
     public sealed class BasicConfiguration : ISimpleConfiguration

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Castle.Core.Internal;
+using Dapper.SimpleSave.Attributes;
+using Dapper.SimpleSave.Metadata;
 
 namespace Dapper.SimpleSave.Impl
 {

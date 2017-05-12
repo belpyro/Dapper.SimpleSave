@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Dapper.SimpleSave.Impl;
 
-namespace Dapper.SimpleSave.Impl
+namespace Dapper.SimpleSave.Metadata
 {
     public abstract class BaseMetadata
     {
@@ -19,11 +20,12 @@ namespace Dapper.SimpleSave.Impl
             return _attributes.ContainsKey(typeof(T));
         }
 
+        //todo remove
         public T GetAttribute<T>() where T : Attribute
         {
             Attribute attr;
             _attributes.TryGetValue(typeof(T), out attr);
-            return (T) attr;
+            return (T)attr;
         }
     }
 }

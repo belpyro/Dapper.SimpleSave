@@ -7,7 +7,9 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Transactions;
 using Castle.Core.Internal;
+using Dapper.SimpleSave.Attributes;
 using Dapper.SimpleSave.Impl;
+using Dapper.SimpleSave.Metadata;
 using Newtonsoft.Json;
 
 namespace Dapper.SimpleSave

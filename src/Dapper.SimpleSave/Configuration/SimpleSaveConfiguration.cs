@@ -1,4 +1,4 @@
-﻿namespace Dapper.SimpleSave
+﻿namespace Dapper.SimpleSave.Configuration
 {
     public static class SimpleSaveConfiguration
     {
